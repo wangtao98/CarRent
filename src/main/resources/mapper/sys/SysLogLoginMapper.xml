@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.iwiller.sys.mapper.SysLogLoginMapper" >
+  <resultMap id="BaseResultMap" type="com.iwiller.sys.domain.SysLogLogin" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="loginname" property="loginname" jdbcType="VARCHAR" />
+    <result column="loginip" property="loginip" jdbcType="VARCHAR" />
+    <result column="logintime" property="logintime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_log_login
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.iwiller.sys.domain.SysLogLogin" useGeneratedKeys="true" keyProperty="id" >
+    insert into sys_log_login (loginname, loginip, logintime
+      )
+    values (#{loginname,jdbcType=VARCHAR}, #{loginip,jdbcType=VARCHAR}, #{logintime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.iwiller.sys.domain.SysLogLogin">
+    insert into sys_log_login
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="loginname != null">
+        loginname,
+      </if>
+      <if test="loginip != null">
+        loginip,
+      </if>
+      <if test="logintime != null">
+        logintime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="loginname != null">
+        #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="loginip != null">
+        #{loginip,jdbcType=VARCHAR},
+      </if>
+      <if test="logintime != null">
+        #{logintime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.iwiller.sys.domain.SysLogLogin">
+    update sys_log_login
+    <set>
+      <if test="loginname != null">
+        loginname = #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="loginip != null">
+        loginip = #{loginip,jdbcType=VARCHAR},
+      </if>
+      <if test="logintime != null">
+        logintime = #{logintime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iwiller.sys.domain.SysLogLogin" >
+    update sys_log_login
+    set loginname = #{loginname,jdbcType=VARCHAR},
+      loginip = #{loginip,jdbcType=VARCHAR},
+      logintime = #{logintime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, loginname, loginip, logintime
+    from sys_log_login
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, loginname, loginip, logintime
+    from sys_log_login
+  </select>
+
+  <select id="queryAllLogLogin" resultMap="BaseResultMap" >
+    select id, loginname, loginip, logintime
+    from sys_log_login
+    <where>
+      <if test="loginname != null and loginname != ''">
+        and loginname like concat('%',#{loginname},'%')
+      </if>
+      <if test="loginip != null and loginip != ''">
+        and loginip like concat('%',#{loginip},'%')
+      </if>
+      <if test="startTime != null">
+        and logintime &gt; = #{startTime}
+      </if>
+      <if test="endTime != null">
+        and logintime &lt; = #{endTime}
+      </if>
+    </where>
+      order by logintime desc
+  </select>
+</mapper>

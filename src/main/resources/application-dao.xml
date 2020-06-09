@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--引入db.properties-->
+    <context:property-placeholder location="classpath:db.properties" system-properties-mode="NEVER"/>
+
+    <context:component-scan base-package="com.iwiller.sys.service.impl"/>
+    <context:component-scan base-package="com.iwiller.bus.service.impl"/>
+    <context:component-scan base-package="com.iwiller.stat.service.impl"/>
+
+    <!--声明dataSource-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="initialSize" value="5"/>
+        <property name="minIdle" value="30" />
+        <!-- 最大连接数 -->
+        <property name="maxActive" value="300"/>
+        <!-- 设置等待时间 -->
+        <property name="maxWait" value="5000"/>
+        <property name="filters" value="${filters}"/>
+
+    </bean>
+
+    <!-- 如果需要将统计信息写入log，就进行下面的配置，并在web.xml中作相应配置-->
+    <!-- 配置阿里云的sql注入检测 -->
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <!--对被认为是攻击的SQL进行LOG.error输出-->
+        <property name="logViolation"  value="true"/>
+        <!--对被认为是攻击的SQL抛出SQLExcepton-->
+        <property name="throwException" value="false" />
+    </bean>
+
+    <!--配置阿里云连接池状态监控-->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <!--监控sql执行大于1s的sql-->
+        <property name="slowSqlMillis" value="1000" />
+        <property name="logSlowSql" value="true" />
+        <property name="mergeSql" value="true" />
+    </bean>
+
+
+
+    <!--声明sessionFactory 并注入mybatis.cfg.xml-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--&lt;!&ndash;2.mybatis配置文件&ndash;&gt;-->
+        <property name="configLocation" value="classpath:mybatis.cfg.xml"/>
+        <!--<property name="typeAliasesPackage" value="com.iwiller.sys.domain com.iwiller.bus.domain"/>-->
+        <!--注入mapper.xml-->
+        <property name="mapperLocations">
+            <array>
+                <value>classpath:mapper/*/*Mapper.xml</value>
+            </array>
+        </property>
+    </bean>
+    <!--扫描mapper接口-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入mapper接口所在的包 注意多个包的情况的配置-->
+        <property name="basePackage">
+            <value>
+                com.iwiller.sys.mapper
+                com.iwiller.bus.mapper
+                com.iwiller.stat.mapper
+            </value>
+        </property>
+        <!--注入sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+
+
+</beans>
