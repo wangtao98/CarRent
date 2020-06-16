@@ -10,7 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!--spring版本锁定-->
-    <org.springframework.version>4.2.3.RELEASE</org.springframework.version>
+    <org.springframework.version>5.2.7.RELEASE</org.springframework.version>
     <org.mybatis.version>3.2.3</org.mybatis.version>
   </properties>
   <dependencies>
@@ -270,13 +270,13 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>4.2.4.RELEASE</version>
+      <version>5.2.7.RELEASE</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>4.2.4.RELEASE</version>
+      <version>5.2.7.RELEASE</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
